@@ -1,0 +1,9 @@
+[deploy]
+startCommand = "python app.py"
+
+[build]
+builder = "NIXPACKS"
+
+[deploy.healthcheck]
+path = "/"
+port = 5000
