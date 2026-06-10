@@ -2,7 +2,7 @@
 startCommand = "python app.py"
 
 [build]
-builder = "NIXPACKS"
+builder = "heroku/buildpacks:python"
 
 [deploy.healthcheck]
 path = "/"
