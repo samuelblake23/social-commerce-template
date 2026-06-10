@@ -74,8 +74,7 @@ def init_db():
     conn.close()
 
 # Telegram Bot Configuration
-BOT_TOKEN = "8843488694: AAF4onB6ByawcY1QkAs15sZSx14
-HnØsv9gI"
+BOT_TOKEN = "8843488694:AAF4onB6ByawcY1QkAs15sZSx14HnØsv9gI"
 CHAT_ID = "8768329228"
 
 # Target sites configuration with real endpoints
