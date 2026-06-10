@@ -1,9 +1,6 @@
 [deploy]
 startCommand = "python app.py"
-
-[build]
-builder = "heroku/buildpacks:python"
-
-[deploy.healthcheck]
-path = "/"
-port = 5000
+healthcheckPath = "/"
+healthcheckTimeout = 100
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 10
