@@ -1,0 +1,8 @@
+@app.route('/test-bot')
+def test_bot():
+    try:
+        bot = telegram.Bot(token=BOT_TOKEN)
+        bot.send_message(chat_id=CHAT_ID, text="Test message from DoubleRhit2")
+        return jsonify({"status": "success", "message": "Test message sent"})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)})
